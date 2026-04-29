@@ -1,0 +1,7 @@
+const { Client } = require('pg');
+const client = new Client({ connectionString: 'postgres://neondb_owner:npg_EOqlbT56BJCF@ep-calm-frog-allsu9ui-pooler.c-3.eu-central-1.aws.neon.tech/neondb?sslmode=require' });
+client.connect()
+  .then(() => client.query("SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = 'public'"))
+  .then(res => console.log('Tables:', res.rows))
+  .catch(console.error)
+  .finally(() => client.end());

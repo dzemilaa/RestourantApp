@@ -1,45 +1,58 @@
-# 🍽️ Restaurant App (Bella)
+# Bella Restaurant
 
-> A modern full-stack web application designed for seamless restaurant management, user orders, and reservations.
+Full-stack restaurant ordering application. The repository contains the React
+frontend in `netlify/` and the ASP.NET Core API in `backend/`.
 
-## 🚀 Live Demo
-👉 [Check out the live frontend app here!](https://bellafrontend.netlify.app/)
+## Requirements
 
----
+- Node.js 20 and npm
+- .NET 8 SDK
+- SQL Server for running the API
 
-## 🛠️ Tech Stack
+## Frontend
 
-### Frontend
-* **React** / Modern JavaScript
-* **Netlify** (Deployment)
-
-### Backend & Database
-* **ASP.NET Core Web API** (.NET, C#) – located in the `backend/` folder
-* **Entity Framework Core** (ORM)
-* **SQL Server / Database configuration**
-
----
-
-## ✨ Key Features
-* **Interactive Menu & Ordering:** Clean interface for browsing dishes and placing orders.
-* **RESTful API Architecture:** Robust backend built with ASP.NET handling data processing and business logic.
-* **Responsive UI:** Optimized for seamless user experience across different screen sizes.
-
----
-
-## ⚙️ Project Structure
-* `backend/` - ASP.NET Core Web API source code
-* `netlify/` - Frontend deployment and configuration files
-
-## 💡 Getting Started & Local Development
-
-To run this project locally on your machine:
-
-### Prerequisites
-* [.NET SDK](https://dotnet.microsoft.com/) installed
-* [Node.js & npm](https://nodejs.org/) installed
-
-### 1. Clone the repository
 ```bash
-git clone [https://github.com/dzemilaa/restaurant-app.git](https://github.com/dzemilaa/restaurant-app.git)
-cd restaurant-app
+cd netlify
+npm ci
+npm run dev
+```
+
+Check the frontend before submitting changes:
+
+```bash
+npm run lint
+npm run build
+```
+
+Netlify is configured in the root `netlify.toml` to use `netlify/` as its base
+directory, run `npm run build`, and publish `dist/`.
+
+## Backend
+
+Set local secrets from the repository root:
+
+```powershell
+dotnet user-secrets set "ConnectionStrings:BazaCon" "<SQL Server connection string>" --project .\backend\backend\backend.csproj
+dotnet user-secrets set "JwtSettings:SecretKey" "<random secret of at least 32 bytes>" --project .\backend\backend\backend.csproj
+dotnet user-secrets set "SmtpSettings:Username" "<SMTP username>" --project .\backend\backend\backend.csproj
+dotnet user-secrets set "SmtpSettings:Password" "<SMTP password>" --project .\backend\backend\backend.csproj
+dotnet run --project .\backend\backend\backend.csproj
+```
+
+For deployment, supply the same values through environment variables:
+`ConnectionStrings__BazaCon`, `JwtSettings__SecretKey`,
+`SmtpSettings__Username`, and `SmtpSettings__Password`.
+
+The backend Docker build context is `backend/backend`:
+
+```bash
+docker build -t bella-backend ./backend/backend
+```
+
+Never commit credentials, publish profiles, local environment files, or generated
+build output.
+
+## CI
+
+GitHub Actions runs frontend lint/build and a backend .NET build for pushes and
+pull requests.

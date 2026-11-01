@@ -1,0 +1,11 @@
+# IDE and operating system files
+.vs/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# Local tooling state
+.netlify/
+coverage/
+*.log

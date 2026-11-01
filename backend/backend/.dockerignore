@@ -1,0 +1,11 @@
+.git
+.vs
+**/bin
+**/obj
+publish/
+**/TestResults
+Properties/PublishProfiles
+appsettings.Development.json
+.env
+.env.*
+!.env.example

@@ -1,0 +1,26 @@
+# Visual Studio and .NET build output
+.vs/
+**/bin/
+**/obj/
+**/publish/
+TestResults/
+
+# Per-user IDE and publish settings
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+**/Properties/PublishProfiles/
+
+# Local secrets and environment files
+.env
+.env.*
+!.env.example
+
+# Local certificates and deployment credentials
+*.pfx
+*.p12
+*.publishsettings
+
+# Runtime-uploaded product images
+**/wwwroot/Images/

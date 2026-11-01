@@ -35,14 +35,27 @@ directory, run `npm run build`, and publish `dist/`.
 ## Backend
 
 The API requires a SQL Server database with the application's schema. The
-database and its data are not included in this repository. Configure a local
-SQL Server connection and local secrets from the repository root:
+database and any user/order data are not included in this repository. Create
+the empty schema on your SQL Server from the repository root:
 
 ```powershell
-dotnet user-secrets set "ConnectionStrings:BazaCon" "<SQL Server connection string>" --project .\backend\backend\backend.csproj
+sqlcmd -S ".\SQLEXPRESS" -E -i .\backend\database\schema.sql
+```
+
+Replace `.\SQLEXPRESS` with your SQL Server instance name if needed. The script
+creates `BellaRestaurantDb` if it does not exist and is safe to re-run; it does
+not insert user, order, or product data. Then configure a local SQL Server
+connection and local secrets from the repository root:
+
+```powershell
+dotnet user-secrets set "ConnectionStrings:BazaCon" "Server=.\SQLEXPRESS;Database=BellaRestaurantDb;Trusted_Connection=True;TrustServerCertificate=True" --project .\backend\backend\backend.csproj
 dotnet user-secrets set "JwtSettings:SecretKey" "<random secret of at least 32 bytes>" --project .\backend\backend\backend.csproj
+dotnet user-secrets set "AppSettings:BaseUrl" "http://127.0.0.1:5173" --project .\backend\backend\backend.csproj
+dotnet user-secrets set "SmtpSettings:Host" "<SMTP host>" --project .\backend\backend\backend.csproj
+dotnet user-secrets set "SmtpSettings:Port" "587" --project .\backend\backend\backend.csproj
 dotnet user-secrets set "SmtpSettings:Username" "<SMTP username>" --project .\backend\backend\backend.csproj
 dotnet user-secrets set "SmtpSettings:Password" "<SMTP password>" --project .\backend\backend\backend.csproj
+dotnet user-secrets set "SmtpSettings:FromEmail" "<sender email>" --project .\backend\backend\backend.csproj
 dotnet run --project .\backend\backend\backend.csproj --no-launch-profile -- --urls http://127.0.0.1:5080
 ```
 
@@ -53,7 +66,9 @@ When deploying the frontend, set `VITE_API_URL` to the deployed API URL.
 
 For deployment, supply the same values through environment variables:
 `ConnectionStrings__BazaCon`, `JwtSettings__SecretKey`,
-`SmtpSettings__Username`, and `SmtpSettings__Password`.
+`AppSettings__BaseUrl`, `SmtpSettings__Host`, `SmtpSettings__Port`,
+`SmtpSettings__Username`, `SmtpSettings__Password`, and
+`SmtpSettings__FromEmail`.
 
 The backend Docker build context is `backend/backend`:
 

@@ -19,8 +19,11 @@ dotnet user-secrets set "SmtpSettings:Password" "<SMTP password>" --project .\ba
 Run the API from this directory:
 
 ```powershell
-dotnet run --project .\backend\backend.csproj
+dotnet run --project .\backend\backend.csproj --no-launch-profile -- --urls http://127.0.0.1:5080
 ```
+
+The frontend's development default expects the API on
+`http://127.0.0.1:5080`.
 
 In deployment, provide the same settings through environment variables:
 `ConnectionStrings__BazaCon`, `JwtSettings__SecretKey`,

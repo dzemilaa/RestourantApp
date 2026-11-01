@@ -17,6 +17,11 @@ npm ci
 npm run dev
 ```
 
+During development, the frontend uses the local API at
+`http://127.0.0.1:5080` by default. Start the backend before using features that
+load or save data. To use a different API URL, set `VITE_API_URL` in
+`netlify/.env.development.local` (this local file is ignored by Git).
+
 Check the frontend before submitting changes:
 
 ```bash
@@ -29,15 +34,22 @@ directory, run `npm run build`, and publish `dist/`.
 
 ## Backend
 
-Set local secrets from the repository root:
+The API requires a SQL Server database with the application's schema. The
+database and its data are not included in this repository. Configure a local
+SQL Server connection and local secrets from the repository root:
 
 ```powershell
 dotnet user-secrets set "ConnectionStrings:BazaCon" "<SQL Server connection string>" --project .\backend\backend\backend.csproj
 dotnet user-secrets set "JwtSettings:SecretKey" "<random secret of at least 32 bytes>" --project .\backend\backend\backend.csproj
 dotnet user-secrets set "SmtpSettings:Username" "<SMTP username>" --project .\backend\backend\backend.csproj
 dotnet user-secrets set "SmtpSettings:Password" "<SMTP password>" --project .\backend\backend\backend.csproj
-dotnet run --project .\backend\backend\backend.csproj
+dotnet run --project .\backend\backend\backend.csproj --no-launch-profile -- --urls http://127.0.0.1:5080
 ```
+
+The commands above configure credentials on your machine only; do not commit
+them. SMTP settings are needed for email-based registration/verification.
+The backend must listen on port `5080` for the frontend's default local URL.
+When deploying the frontend, set `VITE_API_URL` to the deployed API URL.
 
 For deployment, supply the same values through environment variables:
 `ConnectionStrings__BazaCon`, `JwtSettings__SecretKey`,

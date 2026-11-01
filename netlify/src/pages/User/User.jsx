@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './User.css';
 import { assets } from '../../assets/assets';
 import { toast } from 'react-toastify';
+import { apiUrl } from '../../config/api.js';
 
 const User = () => {
   const [userData, setUserData] = useState(null);
@@ -21,7 +22,7 @@ const User = () => {
 
     const fetchUserData = async () => {
       try {
-        const response = await fetch(`https://backend20250126033414.azurewebsites.net/api/FetchAllUsers/GetUserById/${userId}`);
+        const response = await fetch(`${apiUrl}/api/FetchAllUsers/GetUserById/${userId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch user data.');
         }
@@ -61,11 +62,11 @@ const User = () => {
 
       let url = '';
       if (field === 'username') {
-        url = `https://backend20250126033414.azurewebsites.net/api/UserChange/ChangeUsername?id=${userId}&newUsername=${form.username}`;
+        url = `${apiUrl}/api/UserChange/ChangeUsername?id=${userId}&newUsername=${encodeURIComponent(form.username)}`;
       } else if (field === 'email') {
-        url = `https://backend20250126033414.azurewebsites.net/api/UserChange/ChangeEmail?id=${userId}&newEmail=${form.email}`;
+        url = `${apiUrl}/api/UserChange/ChangeEmail?id=${userId}&newEmail=${encodeURIComponent(form.email)}`;
       } else if (field === 'password') {
-        url = `https://backend20250126033414.azurewebsites.net/api/UserChange/ChangePassword?id=${userId}&oldPassword=${form.oldPassword}&newPassword=${form.newPassword}`;
+        url = `${apiUrl}/api/UserChange/ChangePassword?id=${userId}&oldPassword=${encodeURIComponent(form.oldPassword)}&newPassword=${encodeURIComponent(form.newPassword)}`;
       }
 
       // Logovanje podataka koji se šalju
@@ -93,7 +94,7 @@ const User = () => {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`https://backend20250126033414.azurewebsites.net/api/UserChange/DeleteProfile?id=${userId}`, {
+      const response = await fetch(`${apiUrl}/api/UserChange/DeleteProfile?id=${userId}`, {
         method: 'DELETE',
       });
 

@@ -2,14 +2,36 @@ import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { StoreContext } from "./StoreContext.js";
+import { apiUrl } from "../config/api.js";
 
 const StoreContextProvider = (props) => {
   // Promeni cartItems na niz
   const [cartItems, setCartItems] = useState([]);
-  const url = "https://backend20250126033414.azurewebsites.net";
+  const url = apiUrl;
   const [token, setToken] = useState("");
   const userId = localStorage.getItem("userId");
   const [food_list, setFoodList] = useState([]);
+
+  const fetchFoodList = useCallback(async () => {
+    try {
+      const response = await axios.get(`${url}/api/FetchProduct/list`);
+      const data = response.data?.data;
+
+      if (!data || !Array.isArray(data)) {
+        console.error("Invalid response format: Expected 'data' to be an array.");
+        return;
+      }
+
+      const food_list = data.map((item) => ({
+        ...item,
+        productId: Number(item.productId),
+      }));
+      console.log(`Fetched ${food_list.length} items.`);
+      setFoodList(food_list);
+    } catch (error) {
+      console.error("Error fetching food list:", error.message || error);
+    }
+  }, [url]);
 
   useEffect(() => {
     async function loadData() {
@@ -20,7 +42,7 @@ const StoreContextProvider = (props) => {
       }
     }
     loadData();
-  }, [token, userId]);
+  }, [fetchFoodList, token, userId]);
 
   const addToCart = (productId) => {
     const userId = localStorage.getItem("userId");
@@ -59,7 +81,7 @@ const StoreContextProvider = (props) => {
 
     // API poziv za dodavanje proizvoda u korpu
     axios
-      .post('https://backend20250126033414.azurewebsites.net/api/Cart/add', {
+      .post(`${url}/api/Cart/add`, {
         ProductId: productId,
         UserId: userId,
       })
@@ -104,7 +126,7 @@ const StoreContextProvider = (props) => {
     });
 
     axios
-      .post('https://backend20250126033414.azurewebsites.net/api/Cart/remove', {
+      .post(`${url}/api/Cart/remove`, {
         ProductId: productId,
         UserId: localStorage.getItem("userId"),
       })
@@ -138,28 +160,6 @@ const StoreContextProvider = (props) => {
 
     return totalAmount;
 }, [cartItems, food_list]);
-
-
-const fetchFoodList = async () => {
-  try {
-    const response = await axios.get("https://backend20250126033414.azurewebsites.net/api/FetchProduct/list");
-    const data = response.data?.data;
-
-    if (!data || !Array.isArray(data)) {
-      console.error("Invalid response format: Expected 'data' to be an array.");
-      return;
-    }
-
-    const food_list = data.map((item) => ({
-      ...item,
-      productId: Number(item.productId),
-    }));
-    console.log(`Fetched ${food_list.length} items.`);
-    setFoodList(food_list);
-  } catch (error) {
-    console.error("Error fetching food list:", error.message || error);
-  }
-};
 
 
   const contextValue = {

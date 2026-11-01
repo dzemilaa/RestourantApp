@@ -3,6 +3,7 @@ import './LoginPopup.css';
 import { assets } from '../../assets/assets';
 import axios from 'axios';
 import { StoreContext } from '../../context/StoreContext.js';
+import { apiUrl } from '../../config/api.js';
 
 const LoginPopup = ({ setShowLogin }) => {
   const { setToken } = useContext(StoreContext);
@@ -21,7 +22,7 @@ const LoginPopup = ({ setShowLogin }) => {
     };
 
     try {
-      const response = await axios.post("https://backend20250126033414.azurewebsites.net/api/Registration/login", loginData, {
+      const response = await axios.post(`${apiUrl}/api/Registration/login`, loginData, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -61,7 +62,7 @@ const LoginPopup = ({ setShowLogin }) => {
     };
 
     try {
-      const response = await axios.post("https://backend20250126033414.azurewebsites.net/api/Registration/registration", signUpData, {
+      const response = await axios.post(`${apiUrl}/api/Registration/registration`, signUpData, {
         headers: {
           "Content-Type": "application/json",
         },

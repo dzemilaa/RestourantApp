@@ -5,20 +5,20 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Cart = () => {
-  const { getTotalCartAmount, cartItems, setCartItems } = useContext(StoreContext);
+  const { getTotalCartAmount, cartItems, setCartItems, url } = useContext(StoreContext);
   const navigate = useNavigate();
   const userId = localStorage.getItem('userId');
 
   // Funkcija za dohvat podataka o korpi sa backend-a
   const fetchCartItems = useCallback(async () => {
     try {
-      const response = await axios.get(`https://backend20250126033414.azurewebsites.net/api/Cart/get/${userId}`);
+      const response = await axios.get(`${url}/api/Cart/get/${userId}`);
       console.log("Response from cart API:", response.data);
       setCartItems(response.data || []);
     } catch (error) {
       console.error("Error fetching cart items:", error);
     }
-  }, [setCartItems, userId]);
+  }, [setCartItems, url, userId]);
 
   useEffect(() => {
     if (userId) {
@@ -29,7 +29,7 @@ const Cart = () => {
   // Funkcija za uklanjanje proizvoda iz korpe
   const handleRemove = async (productId) => {
     try {
-      await axios.post('https://backend20250126033414.azurewebsites.net/api/Cart/remove', {
+      await axios.post(`${url}/api/Cart/remove`, {
         ProductId: productId,
         UserId: userId,
       });
@@ -68,7 +68,7 @@ const Cart = () => {
   groupCartItems(cartItems).map((item) => (
     <div key={item.productId}>
       <div className='cart-items-title cart-items-item'>
-        <img src={`https://backend20250126033414.azurewebsites.net/images/${item.image}`} alt={item.name} />
+        <img src={`${url}/images/${item.image}`} alt={item.name} />
         <p>{item.name}</p>
         <p>${item.price}</p>
         <p>{item.quantity}</p>

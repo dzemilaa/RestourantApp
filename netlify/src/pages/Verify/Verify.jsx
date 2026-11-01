@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { apiUrl } from '../../config/api.js';
 
 const Verify = () => {
   const [message, setMessage] = useState('Verifying...');
@@ -16,7 +17,7 @@ const Verify = () => {
       return;
     }
 
-    fetch(`https://backend20250126033414.azurewebsites.net/api/Registration/verify?token=${token}`)
+    fetch(`${apiUrl}/api/Registration/verify?token=${encodeURIComponent(token)}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error('Verification failed.');

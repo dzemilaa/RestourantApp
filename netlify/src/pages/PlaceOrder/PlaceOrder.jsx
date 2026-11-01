@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const PlaceOrder = () => {
-  const { getTotalCartAmount, cartItems, setCartItems } = useContext(StoreContext);
+  const { getTotalCartAmount, cartItems, url, setCartItems } = useContext(StoreContext);
   const navigate = useNavigate();
   const userId = localStorage.getItem('userId');
 
@@ -40,7 +40,7 @@ const PlaceOrder = () => {
     });
 
     try {
-      const response = await axios.post("https://backend20250126033414.azurewebsites.net/api/Order/Order", orderData, {
+      const response = await axios.post(`${url}/api/Order/Order`, orderData, {
         headers: {
           'Content-Type': 'multipart/form-data', // Koristimo multipart/form-data
         },
